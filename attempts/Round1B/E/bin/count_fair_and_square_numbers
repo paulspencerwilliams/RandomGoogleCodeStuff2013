@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+File.open(ARGV[0]) do |f|
+  f.each_line.with_index do |line, index|
+    if index  > 0 
+      STDOUT << "Case ##{index}: #{count_fair_and_square(a,b)}\n"
+    end
+  end
+end

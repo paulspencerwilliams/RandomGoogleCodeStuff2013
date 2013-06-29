@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+def get_word(line)
+  changes = 0
+  if line != ""
+    index = 0
+    word = line[index]
+    while (!@dictionary.include?(word) && (index < line.length))
+      index = index + 1
+      word << line[index]
+    end
+    changes + get_word(line[index..-1])
+  end
+  changes
+end
+
+@dictionary = [] 
+File.open(ARGV[1]) do |f|
+  f.each_line do | entry |
+    @dictionary << entry   
+  end 
+end
+
+File.open(ARGV[0]) do |f|
+  f.each_line.with_index do |line, index|
+    if index  > 0 
+      @changes = 0
+      STDOUT << "Case ##{index}: #{get_word(line)}\n"
+    end
+  end
+end

@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+
+def count_recycled_numbers(a, b)
+  pairs = 0
+  (a..b).each do |n|
+    (n..b).each do |m|
+      is_recycled_pair = false
+      if (m > n) 
+        special_n_string = n.to_s << n.to_s << n.to_s
+        special_m_string = m.to_s 
+        if special_n_string.include?(special_m_string)
+          is_recycled_pair = true
+          #puts("(#{n},#{m}),\n")
+        else
+          #puts("#{n}:#{m}\n")
+        end 
+      end
+      if (is_recycled_pair == true)
+        pairs = pairs.next
+      end
+    end
+  end
+  pairs
+end
+
+File.open(ARGV[0]) do |f|
+  f.each_line.with_index do |line, index|
+    if index  > 0 
+      a = line.split(" ")[0].to_i
+      b = line.split(" ")[1].to_i
+      STDOUT << "Case ##{index}: #{count_recycled_numbers(a,b)} \n"
+    end
+  end
+end
+

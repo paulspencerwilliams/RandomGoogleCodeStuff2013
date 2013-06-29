@@ -1,0 +1,48 @@
+#!/usr/bin/env ruby
+
+def is_palindrome?(number)
+  if number% 1 == 0 
+    if number.to_s.reverse == number.to_s
+      true
+    else
+      false
+    end 
+  else
+    false
+  end
+end
+
+def is_square_of_palindrome?(number)
+  sr = Math.sqrt(number)
+  if sr% 1 == 0 
+    if is_palindrome?sr.to_i
+      true
+    else
+      false
+    end
+  else
+    false
+  end
+end
+
+def count_fair_and_square(a, b)
+  fair_and_squares =  0
+  (a..b).each do | number |
+    if is_palindrome?(number)
+      if is_square_of_palindrome?(number)
+        fair_and_squares = fair_and_squares +1
+      end
+    end
+  end 
+  fair_and_squares
+end
+
+File.open(ARGV[0]) do |f|
+  f.each_line.with_index do |line, index|
+    if index  > 0 
+      a = line.split(" ")[0].to_i
+      b = line.split(" ")[1].to_i
+      STDOUT << "Case ##{index}: #{count_fair_and_square(a,b)}\n"
+    end
+  end
+end

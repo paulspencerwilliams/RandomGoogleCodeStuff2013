@@ -1,0 +1,101 @@
+#!/usr/bin/env ruby
+
+@game_number = 0
+
+class Game
+
+  def initialize(number)
+    @row_to_add = 0
+    @number = number
+    @board = [[],[],[],[]]
+  end
+
+  def add(line)
+    values = line.split('') 
+    values.each.with_index do | value, index |
+      if (index < 4)
+        @board[@row_to_add][index] = value
+      end
+    end
+    
+    if @row_to_add == 3
+      @row_to_add = 0
+    else
+      @row_to_add = @row_to_add + 1
+    end 
+  end
+
+
+  def does_not_contain_full_stop?(cells)
+    if cells.include?"."
+      false
+      puts("fullstop")
+    else
+      true
+      puts("fnot ullstop")
+    end 
+  end
+
+
+  def contains_only_one(cells)
+   if cells.include?"X" and cells.include?"O"
+     false
+   else
+     true
+   end 
+  end
+   
+  def any_horizontal_wins
+    winner = nil
+    @board.each do | row |
+      puts(row)
+      if does_not_contain_full_stop?(row)
+        if contains_only_one(row)
+          if row.include?"X"
+            winner = "X"
+          else
+            winner = "O"
+          end
+        end
+      end
+    end 
+    winner
+  end
+
+  def report_result 
+    winner = any_horizontal_wins
+    if (winner)
+      print_result(winner)
+    end 
+     
+    
+  end
+
+  def print_result(winner)
+    STDOUT << "Case ##{@number}: #{winner}\n"
+  end
+
+end
+
+def add_line(line)
+  if line== "\n"
+    @current_game.report_result
+    @current_game = nil
+  else
+    if @current_game == nil 
+      @game_number = @game_number + 1
+      @current_game = Game.new(@game_number)
+    end
+    @current_game.add(line)
+
+  end 
+end
+
+File.open(ARGV[0]) do |f|
+  f.each_line.with_index do |line, index|
+    if index   == 1 
+      add_line(line)
+    end
+  end
+  add_line("\n")
+end

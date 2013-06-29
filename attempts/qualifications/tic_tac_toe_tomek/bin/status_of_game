@@ -1,0 +1,150 @@
+#!/usr/bin/env ruby
+
+@game_number = 0
+
+class Game
+
+  def initialize(number)
+    @number = number
+    @board = []
+  end
+
+  def add(line)
+    @board << line.split('')
+  end
+  
+  def cells_are_full?(cells)
+    if cells.include?"."
+      false
+    else
+      true
+    end
+  end
+  
+  def cells_have_only_one_type?(cells)
+    if cells.include?"X" and cells.include?"O"
+      false
+    else
+      true
+    end 
+  end
+  
+  def any_horizontal_winners?
+    winner = nil
+    @board.each do | row |
+      row_winner = cells_winner(row)
+      if row_winner
+        winner = row_winner 
+      end
+    end
+    winner 
+  end
+
+  def any_vertical_winners?
+    winner = nil 
+    (0..3).each do |column_index|
+      cells = []
+      (0..3).each do |row_index|
+        cells << @board[row_index][column_index]
+      end
+      column_winner = cells_winner(cells)
+      if column_winner
+        winner = column_winner
+      end
+    end    
+    winner 
+  end
+  
+  def any_diagonal_winners?
+    top_left_to_bottom_right = []
+    top_left_to_bottom_right << @board[0][0]
+    top_left_to_bottom_right << @board[1][1]
+    top_left_to_bottom_right << @board[2][2]
+    top_left_to_bottom_right << @board[3][3]
+    top_right_to_bottom_left = [] 
+    top_right_to_bottom_left << @board[3][0]
+    top_right_to_bottom_left << @board[2][1]
+    top_right_to_bottom_left << @board[1][2]
+    top_right_to_bottom_left << @board[0][3]
+    
+    winner = cells_winner(top_left_to_bottom_right) 
+    if winner == nil
+      winner = cells_winner(top_right_to_bottom_left) 
+    end 
+    winner
+    
+  end
+ 
+  def cells_winner(cells)
+    if cells_are_full?(cells)
+      if cells_have_only_one_type?(cells)
+        if cells.include?"X"
+          winner = "X"
+        else
+          winner = "O"
+        end 
+      end 
+    end
+  end
+
+
+  def any_empty_cells?
+    empty_cell_found = false
+    @board.each do |row|
+      if row.include?"."
+        empty_cell_found = true
+      end 
+    end 
+    empty_cell_found
+  end
+
+  
+  def report_result
+    winner = any_horizontal_winners?
+    if winner
+      puts("Case ##{@number}: #{winner} won")
+    else
+      winner = any_vertical_winners?
+      if winner
+        puts("Case ##{@number}: #{winner} won")
+      else
+        winner = any_diagonal_winners?
+        if winner
+          puts("Case ##{@number}: #{winner} won")
+        else
+          if any_empty_cells?
+            puts("Case ##{@number}: Game has not completed")
+          else
+            puts("Case ##{@number}: Draw")
+          end
+        end
+        
+      end
+      
+    end
+  end
+
+ 
+end
+
+def add_line(line)
+  if line== "\n"
+    @current_game.report_result
+    @current_game = nil
+  else
+    if @current_game == nil 
+      @game_number = @game_number + 1
+      @current_game = Game.new(@game_number)
+    end
+    @current_game.add(line)
+
+  end 
+end
+
+File.open(ARGV[0]) do |f|
+  f.each_line.with_index do |line, index|
+    if index > 0  
+      add_line(line)
+    end
+  end
+end
